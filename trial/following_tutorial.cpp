@@ -27,12 +27,12 @@ glBegin(GL_POLYGON);
 
 // Vertices will be added in the next step
 // glEnd();
-int unit = 1;
 
-glVertex3f( -1*unit, -1*unit, -1*unit);       // P1
-glVertex3f( -1*unit,  1*unit, -1*unit);       // P2
-glVertex3f(  1*unit,  1*unit, -1*unit);       // P3
-glVertex3f(  1*unit, -1*unit, -1*unit);       // P4
+
+glVertex3f( -0.5, -0.5, -0.5);       // P1
+glVertex3f( -0.5,  0.5, -0.5);       // P2
+glVertex3f(  0.5,  0.5, -0.5);       // P3
+glVertex3f(  0.5, -0.5, -0.5);       // P4
 
 glEnd();
 
