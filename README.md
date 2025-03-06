@@ -1,9 +1,11 @@
 # OpenGL
 
+//TODO: update a link or ppt file including images
+
 ## 🙋🏻‍♀️ What is OpenGL
 As we can see from the name, it's Open Graphics Library.
 
-### Then what is Graphics Library?
+### 🙋 Then what is Graphics Library?
 - a library providing graphics rendering APIs, usually used for 2D and 3D graphics.
 #### - they are used in various fields, like ..
   - Video Games
@@ -21,17 +23,27 @@ As we can see from the name, it's Open Graphics Library.
   - Social Media and Content Creation
   - Art and Creative Industries ...
   - and so on
-#### - and the examples for OpenGL are as following:
+#### - and the examples for Graphics Library are as following:
   - WebGL, DirectX, Vulkan, Metal, OpenGL ES, OpenCL
   - (TBU for short descriptions of each of them)
 
-### Then What's the identifiable characteristics of OpenGL from others?
+### 🙋🏻‍♀️ Then What's the identifiable characteristics of OpenGL from others?
 - it's a cross-platform.
 - real-time rendering
 - high-level hardware abstraction
+- high level + fully programmable Shading Pipeline
+  ```
+  🔎 Shading Pipeline (To be Updated)
+  ```
+- developed and maintained from Khronos Group
+  ```
+  about Khronos Group (To be Updated)
+  ```
 
 
-## 🙋🏻‍♀️ Then How can we use OpenGL
+
+
+## 🙋 Then How can we use OpenGL
 ### Environment
 - since it's cross-platform, we can use it in Linux, MacOS and Windows.
 ### Installation
