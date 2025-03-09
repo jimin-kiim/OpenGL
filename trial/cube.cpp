@@ -22,22 +22,25 @@ double unit =  0.5;
 
 void display_original_cube_map(){
 
-  //  Clear screen and Z-buffer
-  glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+  //  Clear screen; existing drawings and resetting Z-buffer; depth - distance from the camera
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  // every drawing is staring with glBegin and ending with glEnd
+
+  /* 
   // Multi-colored side - FRONT
   glBegin(GL_POLYGON);
+  // GL_POLYGON, GL_LINE, GL_QUAD.. 
 
-  // Vertices will be added in the next step
-  // glEnd();
-
-  glVertex3f( -1*unit, -1*unit, -1*unit);       // P1
-  glVertex3f( -1*unit,  1*unit, -1*unit);       // P2
-  glVertex3f(  1*unit,  1*unit, -1*unit);       // P3
-  glVertex3f(  1*unit, -1*unit, -1*unit);       // P4
+  // Defining Vertices 
+  // in counter clock wise 
+  glVertex3f( -1*unit, -1*unit, -1*unit);       // Point 1
+  glVertex3f( -1*unit,  1*unit, -1*unit);       // Point 2
+  glVertex3f(  1*unit,  1*unit, -1*unit);       // Point 3
+  glVertex3f(  1*unit, -1*unit, -1*unit);       // Point 4
 
   glEnd();
-
+*/
   // Reset transformations
   glLoadIdentity();
 
@@ -48,7 +51,9 @@ void display_original_cube_map(){
 
   //Multi-colored side - FRONT
   glBegin(GL_POLYGON);
-
+  // 3: 3 dimension
+  // f: floating point 
+  // color: 0 to 1. all 0s: black 
   glColor3f( 1.0, 0.0, 0.0 );     glVertex3f(  1*unit, -1*unit, -1*unit );      // P1 is red
   glColor3f( 0.0, 1.0, 0.0 );     glVertex3f(  1*unit,  1*unit, -1*unit );      // P2 is green
   glColor3f( 0.0, 0.0, 1.0 );     glVertex3f( -1*unit,  1*unit, -1*unit );      // P3 is blue
@@ -58,7 +63,7 @@ void display_original_cube_map(){
 
 // White side - BACK
   glBegin(GL_POLYGON);
-  glColor3f(   1.0,  1.0, 1.0 );
+  glColor3f(   1.0,  1.0, 1.0 ); // white 
   glVertex3f(  1*unit, -1*unit, 1*unit );
   glVertex3f(  1*unit,  1*unit, 1*unit );
   glVertex3f( -1*unit,  1*unit, 1*unit );
@@ -203,7 +208,7 @@ glutCreateWindow("Awesome Cube");
 glEnable(GL_DEPTH_TEST);
 
 // Callback functions
-glutDisplayFunc(display_cubemap);
+glutDisplayFunc(display_original_cube_map);
 glutSpecialFunc(specialKeys);
 
 //  Pass control to GLUT for events
