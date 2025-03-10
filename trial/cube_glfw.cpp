@@ -1,13 +1,17 @@
-// Includes
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
+
 // to prevent an error, glad should be imported beforehand other packages like glfw..
 #include <glad/glad.h>  // Loading OpenGL functions
 #include <GLFW/glfw3.h> // Required for creating window, handling input
 #include <glm/glm.hpp>  // GLM core
 #include <glm/gtc/matrix_transform.hpp> // GLM transformations
 #include <glm/gtc/type_ptr.hpp> // GLM to OpenGL types
+
+#include <iostream>
+#include <sstream> // for stringstream 
+#include <fstream> // for ifstream
 
 // Function Prototypes
 void display();
@@ -19,13 +23,10 @@ float rotate_x = 0.0f;
 
 // Shader Program
 GLuint shaderProgram;
+GLuint VAO, VBO, EBO;
 
 // Function to compile shaders and create shader program (implementation not shown)
 GLuint createShaderProgram();
-
-// Vertex Array Object and Vertex Buffer Object
-GLuint VAO, VBO;
-
 
 // Cube vertices
 GLfloat vertices[] = {
@@ -43,75 +44,84 @@ GLuint indices[] = {
     // Add other cube faces as needed
 };
 
-// Vertex Shader Source
-const char* vertexShaderSource = R"(
-#version 330 core
-layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec3 aColor;
-out vec3 ourColor;
-uniform mat4 uMVPMatrix;
-void main()
-{
-    gl_Position = uMVPMatrix * vec4(aPos, 1.0);
-    ourColor = aColor;
-}
-)";
+std::string readShaderSource(const char* filepath) {
+    std::ifstream file(filepath);
+    std::stringstream shaderStream;
 
-// Fragment Shader Source
-const char* fragmentShaderSource = R"(
-#version 330 core
-in vec3 ourColor;
-out vec4 FragColor;
-void main()
-{
-    FragColor = vec4(ourColor, 1.0);
-}
-)";
+    if (!file.is_open()) {
+        std::cerr << "Failed to open shader file: " << filepath << std::endl;
+        return "";
+    }
 
+    shaderStream << file.rdbuf(); // 
+    file.close();
+
+    return shaderStream.str();
+}
+
+// Function to compile a shader from source code
+GLuint compileShader(const std::string& source, GLenum shaderType) {
+    GLuint shader = glCreateShader(shaderType);
+    const char* shaderSource = source.c_str();
+    glShaderSource(shader, 1, &shaderSource, nullptr);
+    glCompileShader(shader);
+
+    // Check for compilation errors
+    GLint success;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        char infoLog[512];
+        glGetShaderInfoLog(shader, 512, nullptr, infoLog);
+        std::cerr << "Shader Compilation Error: " << infoLog << std::endl;
+        return 0;
+    }
+
+    return shader;
+}
 
 // Function to compile shaders and create shader program
-GLuint createShaderProgram()
-{
-    // Vertex Shader
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-    // Check for compilation errors...
+GLuint createShaderProgram(const char* vertexPath, const char* fragmentPath) {
 
-    // Fragment Shader
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    // Check for compilation errors...
+    std::string vertexShaderSource = readShaderSource(vertexPath);
+    std::string fragmentShaderSource = readShaderSource(fragmentPath);
 
-    // Shader Program
-    GLuint program = glCreateProgram();
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
-    glLinkProgram(program);
-    // Check for linking errors...
+    GLuint vertexShader = compileShader(vertexShaderSource, GL_VERTEX_SHADER);
+    GLuint fragmentShader = compileShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
 
-    // Clean up shaders as they're linked into our program now and no longer necessary
+    // Create shader program
+    GLuint shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    // Check for linking errors
+    GLint success;
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success)
+    {
+        char infoLog[512];
+        glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
+        std::cerr << "Shader Program Linking Error: " << infoLog << std::endl;
+        return 0;
+    }
+
+    // Delete the individual shaders after linking
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-    return program;
+    return shaderProgram;
 }
 
 
-void setupBuffers()
-{
-    // Generate and bind Vertex Array Object
+void setupBuffers() {
+    // Generate and bind Vertex Array Object, Vertex Binding Object, Element Binding Object  
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
-    // Generate and bind Vertex Buffer Object
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    // Generate and bind Element Buffer Object
-    GLuint EBO;
     glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
@@ -128,8 +138,7 @@ void setupBuffers()
     glBindVertexArray(0);
 }
 
-void display()
-{
+void display() {
     // Clear screen and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -171,10 +180,8 @@ void display()
     glUseProgram(0);
 }
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-    if (action == GLFW_PRESS || action == GLFW_REPEAT)
-    {
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (action == GLFW_PRESS || action == GLFW_REPEAT) {
         if (key == GLFW_KEY_RIGHT)
             rotate_y += 5.0f;
         else if (key == GLFW_KEY_LEFT)
@@ -186,11 +193,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     }
 }
 
-int main(void)
-{
+int main(void) {
     // Initialize GLFW
-    if (!glfwInit())
-    {
+    if (!glfwInit()) {
         // Initialization failed
         return -1;
     }
@@ -202,20 +207,26 @@ int main(void)
 
     // Create a GLFW windowed window and its OpenGL context
     GLFWwindow* window = glfwCreateWindow(800, 600, "Awesome Cube", NULL, NULL);
-    if (!window)
-    {
+    if (!window) { // when failed to create window, NULL is stored in window. 
         glfwTerminate();
+        std::cerr << "Failed to create window" << std::endl;
         // Window creation failed
         return -1;
     }
 
     // Make the window's context current
     glfwMakeContextCurrent(window);
+    GLenum err = glGetError();
+    if (GL_NO_ERROR) {
+         std::cout << "Window is set as the current context." << std::endl;
+    } else {
+        std::cerr << "Making Context Current failed." << err << std::endl;
+    }
 
     // Initialize GLAD
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         // GLAD initialization failed
+        std::cerr << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
 
@@ -223,14 +234,20 @@ int main(void)
     glEnable(GL_DEPTH_TEST);
 
     // Compile shaders and create shader program
-    shaderProgram = createShaderProgram();
+    // shaderProgram = createShaderProgram();
+    // Create the shader program
+    GLuint shaderProgram = createShaderProgram("cube.vsh", "cube.fsh");
+    if (shaderProgram == 0) {
+        // Shader program creation failed
+        std::cerr << "Failed to create shader programs" << std::endl;
+        return -1;
+    }
 
     // Set the key callback
     glfwSetKeyCallback(window, key_callback);
 
     // Main loop
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
         // Render here
         display();
 
