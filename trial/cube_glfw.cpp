@@ -1,8 +1,9 @@
+// #include <cube_glfw.hpp>
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
 
-// to prevent an error, glad should be imported beforehand other packages like glfw..
+// to prevent an erroror, glad should be imported beforehand other packages like glfw..
 #include <glad/glad.h>  // Loading OpenGL functions
 #include <GLFW/glfw3.h> // Required for creating window, handling input
 #include <glm/glm.hpp>  // GLM core
@@ -17,6 +18,13 @@
 void display();
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
+std::string readShaderSource(const char* filepath);
+GLuint compileShader(const std::string& source, GLenum shaderType);
+GLuint createShaderProgram(const char* vertexPath, const char* fragmentPath); 
+
+void setupBuffers();
+int main(void);
+
 // Global Variables
 float rotate_y = 0.0f;
 float rotate_x = 0.0f;
@@ -25,16 +33,13 @@ float rotate_x = 0.0f;
 GLuint shaderProgram;
 GLuint VAO, VBO, EBO;
 
-// Function to compile shaders and create shader program (implementation not shown)
-GLuint createShaderProgram();
-
 // Cube vertices
 GLfloat vertices[] = {
     // Positions          // Colors
-     1.0f, -1.0f, -1.0f,  1.0f, 0.0f, 0.0f, // Vertex 1
-     1.0f,  1.0f, -1.0f,  0.0f, 1.0f, 0.0f, // Vertex 2
-    -1.0f,  1.0f, -1.0f,  0.0f, 0.0f, 1.0f, // Vertex 3
-    -1.0f, -1.0f, -1.0f,  1.0f, 1.0f, 0.0f  // Vertex 4
+     1.0f, -1.0f, -1.0f,  1.0f, 0.0f, 0.0f, // Vertex 1 - red
+     1.0f,  1.0f, -1.0f,  0.0f, 1.0f, 0.0f, // Vertex 2 - green 
+    -1.0f,  1.0f, -1.0f,  0.0f, 0.0f, 1.0f, // Vertex 3 - blue
+    -1.0f, -1.0f, -1.0f,  1.0f, 1.0f, 0.0f  // Vertex 4 
     // Add other cube faces as needed
 };
 
@@ -49,11 +54,11 @@ std::string readShaderSource(const char* filepath) {
     std::stringstream shaderStream;
 
     if (!file.is_open()) {
-        std::cerr << "Failed to open shader file: " << filepath << std::endl;
+        std::cout << "Failed to open shader file: " << filepath << std::endl;
         return "";
     }
 
-    shaderStream << file.rdbuf(); // 
+    shaderStream << file.rdbuf();
     file.close();
 
     return shaderStream.str();
@@ -66,13 +71,13 @@ GLuint compileShader(const std::string& source, GLenum shaderType) {
     glShaderSource(shader, 1, &shaderSource, nullptr);
     glCompileShader(shader);
 
-    // Check for compilation errors
+    // Check for compilation errorors
     GLint success;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
     if (!success) {
         char infoLog[512];
         glGetShaderInfoLog(shader, 512, nullptr, infoLog);
-        std::cerr << "Shader Compilation Error: " << infoLog << std::endl;
+        std::cout << "Shader Compilation Error: " << infoLog << std::endl;
         return 0;
     }
 
@@ -94,14 +99,14 @@ GLuint createShaderProgram(const char* vertexPath, const char* fragmentPath) {
     glAttachShader(shaderProgram, fragmentShader);
     glLinkProgram(shaderProgram);
 
-    // Check for linking errors
+    // Check for linking errorors
     GLint success;
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success)
     {
         char infoLog[512];
         glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
-        std::cerr << "Shader Program Linking Error: " << infoLog << std::endl;
+        std::cout << "Shader Program Linking Error: " << infoLog << std::endl;
         return 0;
     }
 
@@ -193,44 +198,86 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     }
 }
 
-int main(void) {
-    // Initialize GLFW
-    if (!glfwInit()) {
-        // Initialization failed
-        return -1;
-    }
+// int InitWindow() {
+    
+// }
 
-    // Set GLFW window hints for OpenGL version
+// int InitGLAD() {
+
+// }
+
+// chatGPT 
+const char* GetGLErrorString(GLenum errorCode)
+{
+    switch (errorCode)
+    {
+        case GL_NO_ERROR:              return "GL_NO_ERROR";
+        case GL_INVALID_ENUM:         return "GL_INVALID_ENUM";
+        case GL_INVALID_VALUE:        return "GL_INVALID_VALUE";
+        case GL_INVALID_OPERATION:    return "GL_INVALID_OPERATION";
+        // case GL_STACK_OVERFLOW:       return "GL_STACK_OVERFLOW";
+        // case GL_STACK_UNDERFLOW:      return "GL_STACK_UNDERFLOW";
+        case GL_OUT_OF_MEMORY:        return "GL_OUT_OF_MEMORY";
+        case GL_INVALID_FRAMEBUFFER_OPERATION: return "GL_INVALID_FRAMEBUFFER_OPERATION";
+        default:                      return "Unknown OpenGL error";
+    }
+}
+
+int main(void) {
+
+    std::cout << "In - main" << std::endl; // to flush the buffer for output verification 
+    // Initialize GLFW
+    glfwInit();
+    GLenum error =glGetError();
+    std::cout << "Error verification result using glGetError()" << GetGLErrorString(error) << std::endl;
+    
+    while ((error= glGetError()) != 0) {
+        // if (error) {
+    //     std::cout << "erroror occurred after initiating glfw" << std::endl; 
+    // } else {
+    //     std::cout << "on erroror during glfw intialization" << std::endl; 
+    // }
+    // if (!glfwInit()) {
+    //     // Initialization failed
+    //     std::cerror << "Failed to initialize glfw" << std::endl;
+    //     return -1;
+    // } else {
+    //     std::cout << "Successfully initizalized glfw";
+    // }
+
+    // Setting window hints; should be done before creating Window 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create a GLFW windowed window and its OpenGL context
     GLFWwindow* window = glfwCreateWindow(800, 600, "Awesome Cube", NULL, NULL);
+    error = glGetError();
     if (!window) { // when failed to create window, NULL is stored in window. 
         glfwTerminate();
-        std::cerr << "Failed to create window" << std::endl;
+        std::cout << "Failed to create window" << std::endl;
         // Window creation failed
         return -1;
     }
 
     // Make the window's context current
     glfwMakeContextCurrent(window);
-    GLenum err = glGetError();
-    if (GL_NO_ERROR) {
-         std::cout << "Window is set as the current context." << std::endl;
+    error = glGetError();
+    if (error == GL_NO_ERROR) {
+        std::cout << "Window is set as the current context." << std::endl;
     } else {
-        std::cerr << "Making Context Current failed." << err << std::endl;
+        std::cout << "Making Context Current failed." << error << std::endl;
     }
 
     // Initialize GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         // GLAD initialization failed
-        std::cerr << "Failed to initialize GLAD" << std::endl;
+        std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
 
-    // Enable Z-buffer depth test
+    // Enable Z-buffer depth test; Z buffer is how far from the camera. 
+    // determine the locations of object by comparing the Z-buffer values.
     glEnable(GL_DEPTH_TEST);
 
     // Compile shaders and create shader program
@@ -239,14 +286,14 @@ int main(void) {
     GLuint shaderProgram = createShaderProgram("cube.vsh", "cube.fsh");
     if (shaderProgram == 0) {
         // Shader program creation failed
-        std::cerr << "Failed to create shader programs" << std::endl;
+        std::cout << "Failed to create shader programs" << std::endl;
         return -1;
     }
 
     // Set the key callback
     glfwSetKeyCallback(window, key_callback);
 
-    // Main loop
+    // Main loop - glutMainLoop() in glut 
     while (!glfwWindowShouldClose(window)) {
         // Render here
         display();
@@ -262,4 +309,6 @@ int main(void) {
     glfwTerminate();
 
     return 0;
+    }
+    
 }
