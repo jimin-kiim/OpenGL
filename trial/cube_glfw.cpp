@@ -52,6 +52,22 @@ GLuint indices[] = {
 };
 
 std::string readShaderSource(const char* filepath) {
+    // cout << "file path" << filepath << endl; -> useless since line 60 is already holding it. 
+    ifstream vsh_file("../shader/cube.vsh");  // when using ofstream, we should use 'open()' method but for ifstream, we don't have to. 
+    // when just using {variable name}({file path}) -> the file is opened. 
+    if (!vsh_file.is_open()) {
+        cout << "vsh_file not opened" <<  strerror(errno) << endl;
+    } else {
+        cout << "vsh_file opened" << endl;
+    }
+
+    ifstream test_file("../testfile.txt");
+      if (!test_file.is_open()) {
+        cout << "test_file not opened" << endl;
+    } else {
+        cout << "test_file opened" << endl;
+    }
+
     std::ifstream file(filepath);
     std::stringstream shaderStream;
 
@@ -286,7 +302,8 @@ int main(void) {
     // Compile shaders and create shader program
     // shaderProgram = createShaderProgram();
     // Create the shader program
-    GLuint shaderProgram = createShaderProgram("cube.vsh", "cube.fsh");
+    cout << "before creating shader program" << endl;
+    GLuint shaderProgram = createShaderProgram("../shader/cube.vsh", "../shader/cube.fsh");
     if (shaderProgram == 0) {
         // Shader program creation failed
         std::cout << "Failed to create shader programs" << std::endl;
