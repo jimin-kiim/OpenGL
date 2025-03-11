@@ -14,6 +14,8 @@
 #include <sstream> // for stringstream 
 #include <fstream> // for ifstream
 
+using namespace std;
+
 // Function Prototypes
 void display();
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -228,10 +230,11 @@ int main(void) {
     std::cout << "In - main" << std::endl; // to flush the buffer for output verification 
     // Initialize GLFW
     glfwInit();
-    GLenum error =glGetError();
-    std::cout << "Error verification result using glGetError()" << GetGLErrorString(error) << std::endl;
     
-    while ((error= glGetError()) != 0) {
+    // GLenum error =glGetError(); // -> where the segmentation fault error occurred.
+    // std::cout << "Error verification result using glGetError()" << GetGLErrorString(error) << std::endl;
+    cout << "after glfwInit" << endl; 
+    // while ((error= glGetError()) != 0) {
         // if (error) {
     //     std::cout << "erroror occurred after initiating glfw" << std::endl; 
     // } else {
@@ -252,7 +255,7 @@ int main(void) {
 
     // Create a GLFW windowed window and its OpenGL context
     GLFWwindow* window = glfwCreateWindow(800, 600, "Awesome Cube", NULL, NULL);
-    error = glGetError();
+    // error = glGetError();
     if (!window) { // when failed to create window, NULL is stored in window. 
         glfwTerminate();
         std::cout << "Failed to create window" << std::endl;
@@ -262,12 +265,12 @@ int main(void) {
 
     // Make the window's context current
     glfwMakeContextCurrent(window);
-    error = glGetError();
-    if (error == GL_NO_ERROR) {
-        std::cout << "Window is set as the current context." << std::endl;
-    } else {
-        std::cout << "Making Context Current failed." << error << std::endl;
-    }
+    // GLenum error = glGetError();
+    // if (error == GL_NO_ERROR) {
+    //     std::cout << "Window is set as the current context." << std::endl;
+    // } else {
+    //     std::cout << "Making Context Current failed." << error << std::endl;
+    // }
 
     // Initialize GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -309,6 +312,6 @@ int main(void) {
     glfwTerminate();
 
     return 0;
-    }
+    // }
     
 }
