@@ -3,6 +3,7 @@
 
 cmake_minimum_required(VERSION 3.11) # FetchContent is new in version 3.11.
 project(skybox VERSION 1.0)
+set(CMAKE_INCLUDE_PATH "/usr/include")
 
 include(FetchContent)
 
@@ -14,7 +15,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(glm)
 
-# set(GLEW_INCLUDE_DIR "/usr/include/GL") # GLEW_INCLUDE_DIR: is for where to find the glew.h
+# set(GLEW_INCLUDE_DIR "/usr/include") # GLEW_INCLUDE_DIR: is for where to find the glew.h
 # find_package(GLEW REQUIRED HINTS "/usr/local") # providing additional location for finding the glew.h
 # include_directories(${GLEW_INCLUDE_DIR})
 
