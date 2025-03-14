@@ -160,12 +160,14 @@ void RenderScene()
 {
 	glm::mat4 model(1.0f);
 
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
+	// meshList[0]; brickTexture, shinyMaterial
+	// no translation so that it should be fixed at (0, 0, 0); world origin. 
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	brickTexture.UseTexture();
 	shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 	meshList[0]->RenderMesh();
 
+	// meshList[1]; dirtTexture, dullMaterial
 	model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(0.0f, 4.0f, -2.5f));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -173,6 +175,7 @@ void RenderScene()
 	dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 	meshList[1]->RenderMesh();
 
+	// meshList[2]; dirtTexture, shinyMaterial
 	model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -180,6 +183,7 @@ void RenderScene()
 	shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 	meshList[2]->RenderMesh();
 
+	// shinyMaterial
 	model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(-7.0f, 0.0f, 10.0f));
 	model = glm::scale(model, glm::vec3(0.006f, 0.006f, 0.006f));
@@ -187,6 +191,7 @@ void RenderScene()
 	shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 	xwing.RenderModel();
 
+	// rotating around Y axis. 
 	blackhawkAngle += 0.1f;
 	if (blackhawkAngle > 360.0f)
 	{
@@ -288,7 +293,14 @@ void RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 
 	shaderList[0].Validate();
 
+	// modeling the object first 
 	RenderScene();
+
+	// and then the background
+	glDepthFunc(GL_LEQUAL); // Skybox at max depth
+    glm::mat4 skyboxView = glm::mat4(glm::mat3(viewMatrix)); // Remove translation
+    skybox.DrawSkybox(skyboxView, projectionMatrix);
+    glDepthFunc(GL_LESS); // Reset depth
 }
 
 int main() 
@@ -382,7 +394,7 @@ int main()
 		glfwPollEvents();
 
 		camera.keyControl(mainWindow.getsKeys(), deltaTime);
-		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
+		camera.updateMouseInput(mainWindow.getXChange(), mainWindow.getYChange());
 
 		if (mainWindow.getsKeys()[GLFW_KEY_L])
 		{
@@ -399,7 +411,7 @@ int main()
 		{
 			OmniShadowMapPass(&spotLights[i]);
 		}
-		RenderPass(camera.calculateViewMatrix(), projection);
+		RenderPass(camera.getViewMatrix(), projection);
 
 		mainWindow.swapBuffers();
 	}

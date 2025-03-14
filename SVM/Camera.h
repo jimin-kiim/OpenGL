@@ -14,14 +14,12 @@ public:
 	Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLfloat startPitch, GLfloat startMoveSpeed, GLfloat startTurnSpeed);
 
 	void keyControl(bool* keys, GLfloat deltaTime);
-	void UpdateMouseInput(float xoffset, float yoffset);
-	void mouseControl(GLfloat xChange, GLfloat yChange);
+	void updateMouseInput(float xoffset, float yoffset);
 
 	glm::vec3 getCameraPosition();
 	glm::vec3 getCameraDirection();
 
-	glm::mat4 calculateViewMatrix();
-	glm::mat4 GetViewMatrix() const;
+	glm::mat4 getViewMatrix() const;
 
 	~Camera();
 

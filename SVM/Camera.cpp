@@ -48,7 +48,7 @@ void Camera::keyControl(bool* keys, GLfloat deltaTime)
 	}
 }
 
-void Camera::UpdateMouseInput(float xoffset, float yoffset) {
+void Camera::updateMouseInput(float xoffset, float yoffset) {
     const float sensitivity = 0.1f;
     yaw += xoffset * sensitivity;
     pitch -= yoffset * sensitivity; // Invert for natural feel
@@ -63,33 +63,7 @@ void Camera::UpdateMouseInput(float xoffset, float yoffset) {
     position.z = distance * cos(glm::radians(pitch)) * sin(glm::radians(yaw));
 }
 
-void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
-{
-	xChange *= turnSpeed;
-	yChange *= turnSpeed;
-
-	yaw += xChange;
-	pitch += yChange;
-
-	if (pitch > 89.0f)
-	{
-		pitch = 89.0f;
-	}
-
-	if (pitch < -89.0f)
-	{
-		pitch = -89.0f;
-	}
-
-	update();
-}
-
-glm::mat4 Camera::calculateViewMatrix()
-{
-	return glm::lookAt(position, position + front, up);
-}
-
-glm::mat4 Camera::GetViewMatrix() const {
+glm::mat4 Camera::getViewMatrix() const {
     return glm::lookAt(position, glm::vec3(0.0f, 0.0f, 0.0f), up); // Look at origin
 }
 
