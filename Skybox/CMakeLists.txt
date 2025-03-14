@@ -19,10 +19,11 @@ FetchContent_MakeAvailable(glm)
 # find_package(GLEW REQUIRED HINTS "/usr/local") # providing additional location for finding the glew.h
 # include_directories(${GLEW_INCLUDE_DIR})
 
-# using OpenGL, glfw, glew and glm instead of glut.
+# using OpenGL, glfw, glew, glm and assimp instead of glut.
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(assimp REQUIRED) # Open Asset Import Library; for loading and processing 3D model files; OBJ 
 # find_package(glm REQUIRED)
 message("directory for finding GLEW file is set as : ${GLEW_INCLUDE_DIRS}") # -> /usr/include 
 
@@ -32,4 +33,4 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_executable(skybox main.cpp)
 
 # using OpenGL, glfw, glew instead of glut.
-target_link_libraries(skybox OpenGL::GL glfw GLEW:GLEW glm::glm)
+target_link_libraries(skybox OpenGL::GL glfw GLEW:GLEW assimp:assimp glm::glm)
