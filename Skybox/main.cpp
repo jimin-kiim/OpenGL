@@ -69,10 +69,10 @@ GLfloat lastTime = 0.0f;
 GLfloat blackhawkAngle = 0.0f;
 
 // Vertex Shader
-static const char* vShader = "Shaders/shader.vert";
+static const char* vShader = "../Shaders/shader.vert";
 
 // Fragment Shader
-static const char* fShader = "Shaders/shader.frag";
+static const char* fShader = "../Shaders/shader.frag";
 
 void calcAverageNormals(unsigned int * indices, unsigned int indiceCount, GLfloat * vertices, unsigned int verticeCount, 
 						unsigned int vLength, unsigned int normalOffset)
@@ -152,8 +152,8 @@ void CreateShaders()
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
 
-	directionalShadowShader.CreateFromFiles("Shaders/directional_shadow_map.vert", "Shaders/directional_shadow_map.frag");
-	omniShadowShader.CreateFromFiles("Shaders/omni_shadow_map.vert", "Shaders/omni_shadow_map.geom", "Shaders/omni_shadow_map.frag");
+	directionalShadowShader.CreateFromFiles("../Shaders/directional_shadow_map.vert", "../Shaders/directional_shadow_map.frag");
+	omniShadowShader.CreateFromFiles("../Shaders/omni_shadow_map.vert", "../Shaders/omni_shadow_map.geom", "../Shaders/omni_shadow_map.frag");
 }
 
 void RenderScene()
@@ -301,21 +301,21 @@ int main()
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
 
-	brickTexture = Texture("Textures/brick.png");
+	brickTexture = Texture("../Textures/brick.png");
 	brickTexture.LoadTextureA();
-	dirtTexture = Texture("Textures/dirt.png");
+	dirtTexture = Texture("../Textures/dirt.png");
 	dirtTexture.LoadTextureA();
-	plainTexture = Texture("Textures/plain.png");
+	plainTexture = Texture("../Textures/plain.png");
 	plainTexture.LoadTextureA();
 
 	shinyMaterial = Material(4.0f, 256);
 	dullMaterial = Material(0.3f, 4);
 
 	xwing = Model();
-	xwing.LoadModel("Models/x-wing.obj");
+	xwing.LoadModel("../Models/x-wing.obj");
 
 	blackhawk = Model();
-	blackhawk.LoadModel("Models/uh60.obj");
+	blackhawk.LoadModel("../Models/uh60.obj");
 
 	mainLight = DirectionalLight(2048, 2048,
 								1.0f, 0.53f, 0.3f, 
@@ -358,12 +358,12 @@ int main()
 	spotLightCount++;
 
 	std::vector<std::string> skyboxFaces;
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_up.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_dn.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_bk.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga");
+	skyboxFaces.push_back("../Textures/Skybox/cupertin-lake_rt.tga");
+	skyboxFaces.push_back("../Textures/Skybox/cupertin-lake_lf.tga");
+	skyboxFaces.push_back("../Textures/Skybox/cupertin-lake_up.tga");
+	skyboxFaces.push_back("../Textures/Skybox/cupertin-lake_dn.tga");
+	skyboxFaces.push_back("../Textures/Skybox/cupertin-lake_bk.tga");
+	skyboxFaces.push_back("../Textures/Skybox/cupertin-lake_ft.tga");
 
 	skybox = Skybox(skyboxFaces);
 
