@@ -23,6 +23,7 @@
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "Material.h"
+#include "Light.h"
 
 #include "Model.h"
 
@@ -213,7 +214,9 @@ void DirectionalShadowMapPass(DirectionalLight* light)
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	uniformModel = directionalShadowShader.GetModelLocation();
-	directionalShadowShader.SetDirectionalLightTransform(&light->CalculateLightTransform());
+	glm::mat4 lightTransform  = light->CalculateLightTransform();
+	directionalShadowShader.SetDirectionalLightTransform(&lightTransform);
+	// light->CalculateLightTransform(): returns glm::mat4, a rvalue; a temporary value that doesn't have a persistent identity or stable memory location. 
 
 	directionalShadowShader.Validate();
 
@@ -272,7 +275,8 @@ void RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 	shaderList[0].SetDirectionalLight(&mainLight);
 	shaderList[0].SetPointLights(pointLights, pointLightCount, 3, 0);
 	shaderList[0].SetSpotLights(spotLights, spotLightCount, 3 + pointLightCount, pointLightCount);
-	shaderList[0].SetDirectionalLightTransform(&mainLight.CalculateLightTransform());
+	glm::mat4 lightTransform  = mainLight.CalculateLightTransform();
+	shaderList[0].SetDirectionalLightTransform(&lightTransform);
 
 	mainLight.getShadowMap()->Read(GL_TEXTURE2);
 	shaderList[0].SetTexture(1);
