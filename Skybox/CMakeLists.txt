@@ -25,7 +25,8 @@ FetchContent_MakeAvailable(glm)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-set(SOURCES main.cpp)
+# set(SOURCES "*.cpp")
+file(GLOB SOURCES "*.cpp")
 add_executable(skybox ${SOURCES})
 
 # using OpenGL, glfw, glew instead of glut.
